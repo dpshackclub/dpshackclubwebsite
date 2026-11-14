@@ -67,14 +67,14 @@ export default async function handler(req, res) {
     const payload = await groqResponse.json();
     if (!groqResponse.ok) {
       console.error('Groq API error:', payload);
-      return json(res, 502, { error: 'Vlen AI is currently too tired to answer. Please try after sometime.' });
+      return json(res, 502, { error: 'jai singh is currently too tired to answer. Please try after sometime.' });
     }
 
     const answer = payload.choices?.[0]?.message?.content?.trim();
-    if (!answer) return json(res, 502, { error: 'Vlen AI is currently too tired to answer. Please try after sometime.' });
+    if (!answer) return json(res, 502, { error: 'jai singh is currently too tired to answer. Please try after sometime.' });
     return json(res, 200, { answer });
   } catch (error) {
     console.error('Chat route error:', error);
-    return json(res, 500, { error: 'Vlen AI is currently too tired to answer. Please try after sometime.' });
+    return json(res, 500, { error: 'jai singh is currently too tired to answer. Please try after sometime.' });
   }
 }
