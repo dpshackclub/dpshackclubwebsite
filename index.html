@@ -631,7 +631,7 @@
   <section id="aiChatPanel" class="hidden nb-static bg-white" aria-label="Ask the DPSN website assistant">
     <div class="bg-hackCyan border-b-4 border-ink px-4 py-3 flex items-center justify-between">
       <div>
-        <p class="font-vt text-2xl text-ink leading-none">Vlen AI</p>
+        <p class="font-vt text-2xl text-ink leading-none">Jai Singh</p>
         <p class="font-mono text-[10px] uppercase tracking-wider text-ink/70">Website assistant</p>
       </div>
       <button id="aiChatClose" type="button" class="nb-btn bg-white text-ink w-8 h-8 font-black" aria-label="Close chatbot">×</button>
@@ -651,9 +651,9 @@
   </section>
   <div id="aiGreeting" role="status" aria-live="polite">
     <button id="aiGreetingClose" type="button" aria-label="Dismiss greeting">×</button>
-    <strong>Hi there!</strong> I’m Vlen AI, and I’m here to help. Ask me anything about the club, projects, meetings, or the crew.
+    <strong>Hi there!</strong> I’m Jai Singh, and I’m here to help. Ask me anything about the club, projects, meetings, or the crew.
   </div>
-  <button id="aiChatToggle" type="button" class="nb-btn" aria-expanded="false" aria-controls="aiChatPanel" aria-label="Open Vlen AI chatbot">
+  <button id="aiChatToggle" type="button" class="nb-btn" aria-expanded="false" aria-controls="aiChatPanel" aria-label="Open Jai Singh chatbot">
     <img class="chatbot-logo" src="ai.png" alt="" aria-hidden="true">
   </button>
 </div>
@@ -1077,12 +1077,12 @@ function aiChatAddMessage(role, text, extraClass=''){
 function aiChatSetOpen(open){
   aiChatPanel.classList.toggle('hidden', !open);
   aiChatToggle.setAttribute('aria-expanded', String(open));
-  aiChatToggle.setAttribute('aria-label', open ? 'Close Vlen AI chatbot' : 'Open Vlen AI chatbot');
+  aiChatToggle.setAttribute('aria-label', open ? 'Close Jai Singh chatbot' : 'Open Jai Singh chatbot');
   if(open) aiGreeting.hidden = true;
   aiChatToggle.innerHTML = open ? '×' : '<img class="chatbot-logo" src="ai.png" alt="" aria-hidden="true">';
   if(open){
     if(!aiChatMessages.children.length){
-      aiChatAddMessage('assistant', "Yo. I'm Vlen AI — short answers, useful facts, zero corporate waffle. Ask me about the club, projects, meetings, or the crew.");
+      aiChatAddMessage('assistant', "Yo. I'm Jai Singh — short answers, useful facts, zero corporate waffle. Ask me about the club, projects, meetings, or the crew.");
     }
     aiChatInput.focus();
   }
@@ -1100,7 +1100,7 @@ const aiLocalFacts = [
   {keys:['free','hardware','grant','ysws','pizza','sticker','swag'], answer:'Hack Club is a U.S. 501(c)(3) nonprofit educational charity for teen makers. Its programs support students who build and share projects, with some programs offering hardware, domains, or swag.'},
   {keys:['mark','grade','attendance','school'], answer:'There are no marks, grades, or attendance penalties. This is a student-led club focused on building and learning.'},
   {keys:['crew','leader','mentor','president'], answer:'The crew includes Mr. Shiva Prasad (mentor), U. Karthik (Founder & President), Vrishank Reddy (Co-founder & President of Operations), and Jai Singh (Co-founder & President of Technology).'},
-  {keys:['hello','hi','hey'], answer:'Hey. I am Vlen AI, the DPSN website assistant. Ask me about meetings, projects, joining, grants, or the crew.'}
+  {keys:['hello','hi','hey'], answer:'Hey. I am Jai Singh, the DPSN website assistant. Ask me about meetings, projects, joining, grants, or the crew.'}
 ];
 function aiLocalAnswer(question){
   const normalized = question.toLowerCase();
