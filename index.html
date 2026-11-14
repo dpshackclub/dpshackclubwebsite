@@ -1,0 +1,1158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hack Club DPS Nacharam | Build Weird Stuff, Ship It Loud</title>
+<meta name="description" content="The student-led Hack Club chapter at Delhi Public School, Nacharam. No lectures, no boring theory — just building, shipping and free hardware grants.">
+<meta property="og:title" content="Hack Club DPS Nacharam">
+<meta property="og:description" content="A student-led Hack Club chapter at DPS Nacharam, building and learning together in the computer lab.">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+
+<!-- Tailwind CSS CDN -->
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+  tailwind.config = {
+    theme: {
+      extend: {
+        colors: {
+          hackRed: '#ec3750',
+          dpsGreen: '#008751',
+          dpsDarkGreen: '#00663d',
+          dpsLightGreen: '#e6fffa',
+          hackYellow: '#ffb700',
+          hackCyan: '#00f0ff',
+          hackPink: '#ff007f',
+          ink: '#0d0d0d'
+        },
+        fontFamily: {
+          mono: ['"Space Mono"', 'Courier New', 'monospace'],
+          sans: ['"Space Grotesk"', 'system-ui', 'sans-serif'],
+          vt: ['VT323', 'monospace']
+        }
+      }
+    }
+  }
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Space+Mono:wght@400;700&family=VT323&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+  :root{
+    --red:#ec3750; --green:#008751; --yellow:#ffb700; --cyan:#00f0ff; --pink:#ff007f; --ink:#0d0d0d;
+  }
+  html{scroll-behavior:smooth;}
+  body{
+    font-family:'Space Grotesk',sans-serif;
+    background-color:#008751;
+    color:#0d0d0d;
+    overflow-x:hidden;
+  }
+  .font-vt{font-family:'VT323',monospace;}
+
+  /* ---------- BACKDROP TEXTURES ---------- */
+  .bg-grid{
+    background-image:
+      linear-gradient(rgba(255,255,255,.18) 2px, transparent 2px),
+      linear-gradient(90deg, rgba(255,255,255,.18) 2px, transparent 2px);
+    background-size:44px 44px;
+  }
+  .bg-dots{
+    background-image:radial-gradient(rgba(13,13,13,.32) 2px, transparent 2px);
+    background-size:22px 22px;
+  }
+  .bg-stripes{
+    background-image:repeating-linear-gradient(45deg, rgba(0,0,0,.14) 0 14px, transparent 14px 28px);
+  }
+  .bg-checker{
+    background-image:
+      linear-gradient(45deg, rgba(0,0,0,.10) 25%, transparent 25%, transparent 75%, rgba(0,0,0,.10) 75%),
+      linear-gradient(45deg, rgba(0,0,0,.10) 25%, transparent 25%, transparent 75%, rgba(0,0,0,.10) 75%);
+    background-size:48px 48px;
+    background-position:0 0, 24px 24px;
+  }
+  .bg-sunburst{
+    background:repeating-conic-gradient(from 0deg, rgba(255,255,255,.14) 0deg 10deg, transparent 10deg 20deg);
+  }
+
+  /* ---------- NEO BRUTALISM ---------- */
+  .nb{ border:4px solid var(--ink); box-shadow:8px 8px 0 var(--ink); transition:transform .18s ease, box-shadow .18s ease; }
+  .nb:hover{ transform:translate(-4px,-4px); box-shadow:12px 12px 0 var(--ink); }
+  .nb-static{ border:4px solid var(--ink); box-shadow:8px 8px 0 var(--ink); }
+  .nb-white{ border:4px solid #fff; box-shadow:8px 8px 0 #fff; }
+  .nb-red{ border:4px solid var(--ink); box-shadow:8px 8px 0 var(--red); }
+  .nb-cyan{ border:4px solid var(--ink); box-shadow:8px 8px 0 var(--cyan); }
+  .nb-pink{ border:4px solid var(--ink); box-shadow:8px 8px 0 var(--pink); }
+  .nb-yellow{ border:4px solid var(--ink); box-shadow:8px 8px 0 var(--yellow); }
+
+  .nb-btn{
+    border:3px solid var(--ink); box-shadow:5px 5px 0 var(--ink);
+    transition:transform .1s ease, box-shadow .1s ease, background-color .15s ease, color .15s ease;
+    cursor:pointer; user-select:none;
+  }
+  .nb-btn:hover{ transform:translate(-2px,-2px); box-shadow:7px 7px 0 var(--ink); }
+  .nb-btn:active{ transform:translate(4px,4px); box-shadow:1px 1px 0 var(--ink); }
+
+  /* ---------- ANIMATIONS ---------- */
+  @keyframes marquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
+  .marquee-track{display:flex;width:200%;animation:marquee 18s linear infinite;}
+  .marquee-track.rev{animation:marquee 22s linear infinite reverse;}
+  .marquee-wrap:hover .marquee-track{animation-play-state:paused;}
+
+  @keyframes float{0%,100%{transform:translateY(0) rotate(var(--rot,0deg))}50%{transform:translateY(-12px) rotate(calc(var(--rot,0deg) + 3deg))}}
+  .floaty{animation:float 4.5s ease-in-out infinite;}
+  .floaty.slow{animation-duration:6.5s;}
+
+  @keyframes wiggle{0%,100%{transform:rotate(0)}25%{transform:rotate(-4deg)}75%{transform:rotate(4deg)}}
+  .wiggle:hover{animation:wiggle .3s ease-in-out infinite;}
+
+  @keyframes bounceY{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+  .bouncy{animation:bounceY 1.4s ease-in-out infinite;}
+
+  @keyframes glowPulse{
+    0%,100%{text-shadow:0 0 10px rgba(255,183,0,.9), 0 0 26px rgba(236,55,80,.7), 4px 4px 0 #0d0d0d;}
+    50%{text-shadow:0 0 22px rgba(0,240,255,.95), 0 0 44px rgba(255,0,127,.8), 4px 4px 0 #0d0d0d;}
+  }
+  .neon{animation:glowPulse 2.6s ease-in-out infinite;}
+
+  @keyframes borderGlow{
+    0%,100%{box-shadow:8px 8px 0 #0d0d0d, 0 0 0 rgba(0,240,255,0);}
+    50%{box-shadow:8px 8px 0 #0d0d0d, 0 0 28px rgba(0,240,255,.85);}
+  }
+  .glow-box{animation:borderGlow 2.4s ease-in-out infinite;}
+
+  @keyframes livePulse{0%{box-shadow:0 0 0 0 rgba(236,55,80,.8)}70%{box-shadow:0 0 0 12px rgba(236,55,80,0)}100%{box-shadow:0 0 0 0 rgba(236,55,80,0)}}
+  .live-dot{animation:livePulse 1.6s infinite;}
+
+  @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-6px)}40%{transform:translateX(6px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+  .shake{animation:shake .4s ease-in-out;}
+
+  .tape{
+    position:absolute; width:120px; height:30px; background:rgba(255,183,0,.85);
+    border:2px dashed #0d0d0d; top:-16px; left:50%; transform:translateX(-50%) rotate(-3deg);
+    font-family:'VT323',monospace; font-size:18px; text-align:center; line-height:26px; letter-spacing:2px;
+  }
+
+  .sticker{ cursor:pointer; transition:transform .2s ease; }
+  .sticker:hover{ transform:rotate(-10deg) scale(1.12) !important; }
+
+  /* ---------- TERMINAL ---------- */
+  #terminalOut{ height:230px; overflow-y:auto; scrollbar-width:thin; }
+  #terminalOut::-webkit-scrollbar{width:10px}
+  #terminalOut::-webkit-scrollbar-thumb{background:#008751;border:2px solid #0d0d0d}
+
+  .workshop-sticker{display:inline-flex;width:68px;height:68px;align-items:center;justify-content:center;border:4px solid var(--ink);box-shadow:6px 6px 0 var(--ink);font-family:'Space Mono',monospace;font-weight:700;line-height:1;transition:transform .18s ease,box-shadow .18s ease;}
+  .workshop-sticker:hover{transform:translate(-3px,-3px) rotate(-4deg);box-shadow:9px 9px 0 var(--ink);}
+
+  /* ---------- CAROUSEL ---------- */
+  .rail{ display:flex; gap:28px; overflow-x:auto; scroll-snap-type:x mandatory; padding:26px 6px 34px; scroll-behavior:smooth;}
+  .rail::-webkit-scrollbar{height:12px}
+  .rail::-webkit-scrollbar-track{background:#0d0d0d}
+  .rail::-webkit-scrollbar-thumb{background:#ffb700;border:2px solid #0d0d0d}
+  .rail > *{ scroll-snap-align:center; flex:0 0 320px; }
+
+  /* ---------- ACCORDION ---------- */
+  .acc-panel{ max-height:0; overflow:hidden; transition:max-height .35s ease; }
+  .acc-item.open .acc-panel{ max-height:400px; }
+  .acc-item.open .acc-icon{ transform:rotate(45deg); }
+  .acc-icon{ transition:transform .3s ease; }
+
+  /* ---------- MODAL ---------- */
+  .modal{ position:fixed; inset:0; z-index:120; display:none; align-items:center; justify-content:center; padding:18px; background:rgba(13,13,13,.75); }
+  .modal.show{ display:flex; animation:fadeIn .2s ease; }
+  @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+  @keyframes popIn{from{transform:scale(.9) rotate(-2deg);opacity:0}to{transform:scale(1) rotate(0);opacity:1}}
+  .modal.show .modal-card{ animation:popIn .25s cubic-bezier(.2,1.4,.4,1); }
+
+  /* ---------- TOASTS ---------- */
+  #toastZone{ position:fixed; bottom:22px; left:22px; z-index:200; display:flex; flex-direction:column; gap:12px; max-width:330px; }
+  @keyframes toastIn{from{transform:translateX(-120%) rotate(-6deg);opacity:0}to{transform:translateX(0) rotate(-1deg);opacity:1}}
+  .toast{ animation:toastIn .3s cubic-bezier(.2,1.4,.4,1); }
+
+  /* ---------- CHAOS MODE ---------- */
+  @keyframes hueSpin{from{filter:hue-rotate(0deg)}to{filter:hue-rotate(360deg)}}
+  body.chaos .chaos-target{ animation:hueSpin 6s linear infinite; }
+  body.chaos{ background-image:repeating-linear-gradient(135deg, rgba(255,0,127,.22) 0 30px, rgba(0,240,255,.22) 30px 60px); }
+  body.chaos .nb, body.chaos .nb-static{ box-shadow:10px 10px 0 var(--pink); }
+  body.chaos .sticker{ animation:wiggle .5s ease-in-out infinite; }
+
+  #backTop{ transition:opacity .25s ease, transform .25s ease; }
+  #backTop.hidden-btn{ opacity:0; pointer-events:none; transform:translateY(20px); }
+
+
+  /* ---------- AI CHATBOT ---------- */
+  #aiChatWidget{position:fixed;right:1rem;bottom:1rem;z-index:145;font-family:'Space Grotesk',sans-serif}
+  #aiChatPanel{width:min(390px,calc(100vw - 2rem));height:min(560px,calc(100vh - 9rem));display:flex;flex-direction:column;overflow:hidden}
+  #aiChatPanel.hidden{display:none}
+  #aiChatMessages{scrollbar-width:thin;scrollbar-color:#008751 #0d0d0d}
+  #aiChatMessages::-webkit-scrollbar{width:9px}
+  #aiChatMessages::-webkit-scrollbar-thumb{background:#008751;border:2px solid #0d0d0d}
+  .ai-chat-bubble{max-width:88%;white-space:pre-wrap;overflow-wrap:anywhere}
+  .ai-chat-bubble.user{align-self:flex-end;background:#ec3750;color:#fff}
+  .ai-chat-bubble.assistant{align-self:flex-start;background:#e6fffa;color:#0d0d0d}
+  .ai-chat-bubble.typing{color:#00663d}
+  #aiChatSend:disabled{cursor:wait;opacity:.65}
+  #aiChatToggle{width:90px;height:90px;border-radius:999px;padding:5px;display:flex;align-items:center;justify-content:center;background:#0d0d0d;color:#fff;overflow:visible}
+  #aiChatToggle .chatbot-logo{width:100%;height:100%;object-fit:contain;border-radius:999px;animation:robotFloat 2.8s ease-in-out infinite;filter:drop-shadow(0 4px 7px rgba(0,0,0,.35))}
+  #aiGreeting{position:relative;max-width:min(290px,calc(100vw - 2rem));margin:0 10px 14px 0;padding:13px 42px 13px 16px;background:#fff;border:3px solid #0d0d0d;border-radius:18px;box-shadow:5px 5px 0 #0d0d0d;font-weight:700;font-size:14px;line-height:1.4;animation:greetingPop .45s cubic-bezier(.2,1.4,.4,1) both}
+  #aiGreeting::after{content:"";position:absolute;right:22px;bottom:-12px;width:18px;height:18px;background:#fff;border-right:3px solid #0d0d0d;border-bottom:3px solid #0d0d0d;transform:rotate(45deg)}
+  #aiGreeting[hidden]{display:none}
+  #aiGreetingClose{position:absolute;right:7px;top:7px;width:27px;height:27px;border:2px solid #0d0d0d;border-radius:50%;background:#ffb700;font-weight:900;line-height:1;cursor:pointer}
+  @keyframes greetingPop{from{opacity:0;transform:translateY(8px) scale(.92)}to{opacity:1;transform:translateY(0) scale(1)}}
+  @keyframes robotFloat{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-5px) rotate(2deg)}}
+  *,*::before,*::after{box-sizing:border-box}
+  img,svg{max-width:100%;height:auto}
+  button,a{touch-action:manipulation}
+  .mobile-nav-menu{display:none}
+  .mobile-nav-menu.open{display:grid}
+  .mobile-nav-menu a{margin:0 1rem .75rem;padding:.7rem 1rem;text-align:center;font-size:.78rem;font-weight:800;text-transform:uppercase}
+  .mobile-nav-menu a:last-child{margin-bottom:1rem}
+  .modal-card{max-height:calc(100dvh - 2rem);overflow-y:auto}
+  .acc-item.open .acc-panel{max-height:1000px}
+  @media (max-width:767px){
+    html{scroll-padding-top:72px}
+    body{min-width:0}
+    .nb{box-shadow:6px 6px 0 var(--ink)}
+    .nb-static{box-shadow:6px 6px 0 var(--ink)}
+    .nb-btn{min-height:42px}
+    nav .max-w-7xl{padding-left:.75rem;padding-right:.75rem}
+    nav a[data-scroll].flex{min-width:0;max-width:calc(100% - 54px)}
+    nav a[data-scroll].flex img{height:32px;width:auto}
+    nav a[data-scroll].flex span.text-xl{font-size:1rem}
+    header#top > .relative{padding:5rem 1rem 4.5rem}
+    header#top h1{font-size:clamp(2.35rem,11vw,4rem);line-height:.98;margin-bottom:1.5rem}
+    header#top p{font-size:1rem;line-height:1.45;margin-bottom:2rem}
+    header#top .flex.flex-wrap{gap:.65rem}
+    header#top .flex.flex-wrap > div{padding:.65rem .75rem;min-width:calc(50% - .4rem)}
+    header#top .flex.flex-wrap > div:last-child{min-width:calc(50% - .4rem)}
+    section.py-20,footer.py-14{padding-top:4rem;padding-bottom:4rem}
+    section.px-5{padding-left:1rem;padding-right:1rem}
+    section h2{font-size:clamp(2.15rem,10vw,3.75rem);line-height:.98}
+    #manifesto .grid,#meetings .grid{gap:2.5rem}
+    #manifesto .text-lg{font-size:1rem;line-height:1.5}
+    .tape{display:none}
+    #terminalOut{height:190px;font-size:12px}
+    #terminalInput{min-width:0}
+    #termRun{flex:0 0 auto}
+    .rail{gap:18px;padding:20px 5px 28px}
+    .rail > *{flex-basis:min(320px,calc(100vw - 46px));min-width:0}
+    #railPrev,#railNext{min-width:44px;min-height:44px}
+    #faqList{gap:1rem}
+    .acc-item > button{padding:1rem}
+    .acc-item > button span:first-child{font-size:1rem;line-height:1.25}
+    .modal{padding:10px}
+    .modal-card{width:100%;max-width:none}
+    .modal-card > div.p-6{padding:1rem}
+    #toastZone{left:.75rem;right:.75rem;bottom:.75rem;max-width:none;width:auto}
+    .toast{width:100%;max-width:none}
+    #aiChatWidget{left:.75rem;right:.75rem;bottom:.75rem;display:flex;flex-direction:column;align-items:flex-end}
+    #aiChatPanel{width:100%;height:min(560px,calc(100dvh - 6.5rem));max-height:calc(100dvh - 6.5rem);margin-bottom:.75rem}
+    #aiChatToggle{width:82px;height:82px;flex:0 0 82px}
+    footer .max-w-6xl{width:100%}
+    footer .max-w-6xl > div:first-child{width:100%;justify-content:center;flex-wrap:wrap}
+    footer .max-w-6xl > p{width:100%}
+    footer .max-w-6xl:last-child{text-align:center}
+    #backTop{min-height:42px}
+  }
+  @media (max-width:420px){
+    .marquee-wrap{font-size:1.25rem}
+    header#top .inline-flex{font-size:.65rem;padding-left:.65rem;padding-right:.65rem}
+    #manifesto .flex.items-center{align-items:flex-start}
+    #manifesto .flex.items-center > span:last-child{line-height:1.25}
+    #aiChatForm .flex.items-end{flex-direction:column;align-items:stretch}
+    #aiChatSend{width:100%;min-height:42px}
+    #aiChatInput{width:100%;font-size:16px}
+    .modal-card h3{font-size:1.75rem}
+    .modal-card .text-7xl{font-size:4rem}
+    footer .flex.gap-3{gap:.5rem}
+  }
+  @media (min-width:768px) and (max-width:1100px){
+    nav .max-w-7xl{padding-left:1rem;padding-right:1rem}
+    nav .hidden.md\:flex a{padding-left:.6rem;padding-right:.6rem}
+    .rail > *{flex-basis:300px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+  }
+
+</style>
+</head>
+
+<body class="selection:bg-hackYellow selection:text-ink">
+
+<!-- ============ TOP MARQUEE ============ -->
+<div class="marquee-wrap bg-hackYellow text-ink font-vt text-2xl md:text-3xl py-2 overflow-hidden border-b-4 border-ink tracking-widest uppercase relative z-50">
+  <div class="marquee-track whitespace-nowrap font-bold">
+    <span class="mx-6">⚡ DPS NACHARAM HACK CLUB</span><span class="mx-6 text-hackRed">★</span>
+    <span class="mx-6">SERVICE BEFORE SELF // CODE BEFORE SLEEP</span><span class="mx-6 text-hackRed">★</span>
+    <span class="mx-6">NO LECTURES. NO MARKS. ONLY SHIPPING.</span><span class="mx-6 text-hackRed">★</span>
+    <span class="mx-6">FREE HARDWARE. FREE STICKERS. FREE PIZZA.</span><span class="mx-6 text-hackRed">★</span>
+    <span class="mx-6">⚡ DPS NACHARAM HACK CLUB</span><span class="mx-6 text-hackRed">★</span>
+    <span class="mx-6">SERVICE BEFORE SELF // CODE BEFORE SLEEP</span><span class="mx-6 text-hackRed">★</span>
+    <span class="mx-6">NO LECTURES. NO MARKS. ONLY SHIPPING.</span><span class="mx-6 text-hackRed">★</span>
+    <span class="mx-6">FREE HARDWARE. FREE STICKERS. FREE PIZZA.</span><span class="mx-6 text-hackRed">★</span>
+  </div>
+</div>
+
+<!-- ============ NAVBAR ============ -->
+<nav class="sticky top-0 z-40 bg-white border-b-4 border-ink">
+  <div class="max-w-7xl mx-auto flex justify-between items-center px-4 md:px-8 py-3 gap-3">
+    <a href="#top" data-scroll class="flex items-center gap-2 shrink-0">
+      <img src="hackclub.png" alt="Hack Club logo" class="h-10 w-auto border-2 border-ink bg-white"
+           onerror="this.onerror=null;this.src='https://assets.hackclub.com/icon-rounded.png';">
+      <span class="text-ink font-black text-xl">×</span>
+      <img src="dps.png" alt="DPS Nacharam logo" data-dps class="h-10 w-auto border-2 border-ink bg-white"
+           onerror="this.onerror=null;this.src=DPS_FALLBACK;">
+      <span class="font-vt text-3xl tracking-wide text-dpsGreen hidden lg:inline">// HACKCLUB_DPSN</span>
+    </a>
+
+    <div class="hidden md:flex items-center gap-1 font-bold uppercase text-xs lg:text-sm">
+      <a href="#manifesto" data-scroll class="nb-btn bg-hackCyan text-ink px-3 py-2">Manifesto</a>
+      <a href="#perks" data-scroll class="nb-btn bg-hackYellow text-ink px-3 py-2">The Vibe</a>
+      <a href="#projects" data-scroll class="nb-btn bg-hackPink text-white px-3 py-2">Projects</a>
+      <a href="#meetings" data-scroll class="nb-btn bg-white text-ink px-3 py-2">Meetings</a>
+      <a href="#faq" data-scroll class="nb-btn bg-dpsGreen text-white px-3 py-2">FAQ</a>
+    </div>
+
+    <button id="mobileMenuToggle" type="button" class="nb-btn bg-hackYellow text-ink md:hidden" aria-expanded="false" aria-controls="mobileNavMenu" aria-label="Open navigation menu">
+      <span class="mobile-menu-icon" aria-hidden="true">☰</span>
+    </button>
+  </div>
+  <div id="mobileNavMenu" class="mobile-nav-menu md:hidden" aria-hidden="true">
+    <a href="#manifesto" data-scroll class="nb-btn bg-hackCyan text-ink">Manifesto</a>
+    <a href="#perks" data-scroll class="nb-btn bg-hackYellow text-ink">The Vibe</a>
+    <a href="#projects" data-scroll class="nb-btn bg-hackPink text-white">Projects</a>
+    <a href="#meetings" data-scroll class="nb-btn bg-white text-ink">Meetings</a>
+    <a href="#faq" data-scroll class="nb-btn bg-dpsGreen text-white">FAQ</a>
+  </div>
+</nav>
+
+<!-- ============ HERO ============ -->
+<header id="top" class="relative overflow-hidden bg-dpsGreen bg-grid border-b-4 border-ink">
+  <div class="absolute inset-0 bg-sunburst opacity-40 pointer-events-none chaos-target"></div>
+
+  <!-- floating stickers -->
+  <div class="sticker floaty absolute top-10 left-3 md:left-12 bg-hackRed text-white font-vt text-xl px-3 py-1 nb-static" style="--rot:-8deg;transform:rotate(-8deg)" data-sass="Nacharam represent!">🌲 DPSN CHAPTER</div>
+  <div class="sticker floaty slow absolute top-28 right-3 md:right-16 bg-hackCyan text-ink font-vt text-xl px-3 py-1 nb-static" style="--rot:7deg;transform:rotate(7deg)" data-sass="100% student-led building and learning.">🚀 STUDENT-LED</div>
+  <div class="sticker floaty absolute bottom-24 left-4 md:left-24 bg-hackYellow text-ink font-vt text-xl px-3 py-1 nb-static hidden sm:block" style="--rot:5deg;transform:rotate(5deg)" data-sass="git commit -m 'final final v3 FINAL'">&lt;/&gt; git push --force</div>
+  <div class="sticker floaty slow absolute bottom-10 right-4 md:right-28 bg-hackPink text-white font-vt text-xl px-3 py-1 nb-static hidden sm:block" style="--rot:-6deg;transform:rotate(-6deg)" data-sass="SHIP IT. Perfection is a myth.">🏴‍☠️ SHIP IT</div>
+
+  <div class="relative max-w-5xl mx-auto px-6 py-20 md:py-28 text-center">
+    <div class="inline-flex items-center gap-2 bg-white nb-static px-4 py-1.5 text-xs font-mono mb-8 uppercase tracking-widest font-bold text-ink">
+      <span class="w-3 h-3 rounded-full bg-hackRed live-dot inline-block"></span>
+      Live @ Delhi Public School, Nacharam
+    </div>
+
+    <h1 class="text-5xl md:text-7xl font-black tracking-tight mb-8 leading-[0.95] text-white" style="text-shadow:5px 5px 0 #0d0d0d">
+      Stop playing<br class="sm:hidden"> video games.<br>
+      <span class="neon text-hackYellow">Start building them.</span>
+    </h1>
+
+    <p class="text-lg md:text-2xl text-white max-w-2xl mx-auto mb-10 leading-relaxed font-medium" style="text-shadow:2px 2px 0 #0d0d0d">
+      Where <span class="bg-hackRed text-white px-2 border-2 border-ink">DPSN builders</span> write real code, ship real projects, and quietly rewrite what "CS class" is supposed to mean.
+    </p>
+
+    <div class="flex flex-col sm:flex-row gap-5 justify-center items-center mb-12">
+      <a href="#manifesto" data-scroll class="nb-btn bg-white text-ink font-black text-lg px-8 py-4 uppercase">
+        Read Manifesto <i class="fa-solid fa-scroll ml-2 text-hackRed"></i>
+      </a>
+    </div>
+
+    <div class="flex flex-wrap justify-center gap-4">
+      <div class="nb-static bg-white px-5 py-3 -rotate-2">
+        <div class="font-vt text-4xl text-hackRed" id="counterMembers">0</div>
+        <div class="font-mono text-[10px] uppercase tracking-widest text-ink">Student hackers</div>
+      </div>
+      <div class="nb-static bg-hackYellow px-5 py-3 rotate-2">
+        <div class="font-vt text-4xl text-ink" id="counterProjects">0</div>
+        <div class="font-mono text-[10px] uppercase tracking-widest text-ink">Projects shipped</div>
+      </div>
+      <div class="nb-static bg-hackCyan px-5 py-3 -rotate-1">
+        <div class="font-vt text-4xl text-ink" id="counterHours">0</div>
+        <div class="font-mono text-[10px] uppercase tracking-widest text-ink">Hours hacked</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ============ MID MARQUEE ============ -->
+<div class="marquee-wrap bg-hackPink text-white font-vt text-2xl md:text-3xl py-2 overflow-hidden border-b-4 border-ink tracking-widest uppercase chaos-target">
+  <div class="marquee-track rev whitespace-nowrap font-bold">
+    <span class="mx-6">WEEKLY SESSIONS, COMPUTER LAB</span><span class="mx-6 text-hackYellow">✦</span>
+    <span class="mx-6">GRADES 9–12 WELCOME</span><span class="mx-6 text-hackYellow">✦</span>
+    <span class="mx-6">WORK ON REAL PROJECTS</span><span class="mx-6 text-hackYellow">✦</span>
+    <span class="mx-6">YSWS GRANTS = FREE HARDWARE</span><span class="mx-6 text-hackYellow">✦</span>
+    <span class="mx-6">WEEKLY SESSIONS, COMPUTER LAB, AFTER SCHOOL</span><span class="mx-6 text-hackYellow">✦</span>
+    <span class="mx-6">GRADES 9–12 WELCOME</span><span class="mx-6 text-hackYellow">✦</span>
+    <span class="mx-6">WORK ON REAL PROJECTS</span><span class="mx-6 text-hackYellow">✦</span>
+    <span class="mx-6">YSWS GRANTS = FREE HARDWARE</span><span class="mx-6 text-hackYellow">✦</span>
+  </div>
+</div>
+
+<!-- ============ MANIFESTO ============ -->
+<section id="manifesto" class="relative bg-hackCyan bg-dots border-b-4 border-ink py-20 px-5 md:px-10">
+  <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-12 items-start">
+    <div>
+      <span class="inline-block bg-ink text-hackYellow font-mono text-xs tracking-widest uppercase px-3 py-1 -rotate-2">// 01 · THE MANIFESTO</span>
+      <h2 class="text-4xl md:text-6xl font-black mt-5 mb-6 text-ink leading-none">
+        Writing code on <span class="bg-hackRed text-white px-2 border-4 border-ink inline-block -rotate-1">paper</span> is not coding.
+      </h2>
+      <p class="text-ink text-lg mb-6 leading-relaxed font-medium">
+        Somewhere along the way, computer science became a memorisation subject. Underline the keyword. Draw the flowchart. Get 18/20. Never run the program.
+      </p>
+      <p class="text-ink text-lg mb-8 leading-relaxed font-medium">
+        Hack Club DPSN is the antidote. We open laptops, break things, explore ideas, and actually <strong class="bg-hackYellow px-1 border-2 border-ink">ship</strong> — sites, games, hardware, and creative experiments. Hack Club is a <a href="https://hackclub.com/privacy-and-terms" target="_blank" rel="noopener" class="underline font-black">U.S. 501(c)(3) nonprofit educational charity</a> whose mission is to help build a generation of teen makers. Explore its <a href="https://hackclub.com/programs" target="_blank" rel="noopener" class="underline font-black">official programs</a>. Curiosity mandatory.
+      </p>
+
+      <ul class="space-y-4 font-bold text-ink">
+        <li class="flex items-center gap-3"><span class="nb-btn bg-hackRed text-white px-3 py-0.5 font-vt text-lg">NO</span><span>Slide decks read out loud, word for word</span></li>
+        <li class="flex items-center gap-3"><span class="nb-btn bg-white text-ink px-3 py-0.5 font-vt text-lg">NO</span><span>Prior experience, fancy laptops, or gatekeeping</span></li>
+        <li class="flex items-center gap-3"><span class="nb-btn bg-hackYellow text-ink px-3 py-0.5 font-vt text-lg">YES</span><span>Free hardware, stickers, grants and pizza</span></li>
+        <li class="flex items-center gap-3"><span class="nb-btn bg-dpsGreen text-white px-3 py-0.5 font-vt text-lg">YES</span><span>Shipping something ugly today &gt; planning forever</span></li>
+      </ul>
+
+      <button class="nb-btn bg-ink text-hackCyan font-black uppercase px-6 py-3 mt-8 text-sm" data-sass-btn="I prefer boring classes">
+        I prefer boring classes
+      </button>
+    </div>
+
+    <!-- TERMINAL -->
+    <div class="relative">
+      <div class="tape">MSG</div>
+      <div class="nb-static bg-ink p-5 glow-box">
+        <div class="flex items-center justify-between pb-3 border-b-2 border-dpsGreen mb-3">
+          <div class="flex gap-2">
+            <span class="w-3.5 h-3.5 rounded-full bg-hackRed border border-white"></span>
+            <span class="w-3.5 h-3.5 rounded-full bg-hackYellow border border-white"></span>
+            <span class="w-3.5 h-3.5 rounded-full bg-dpsGreen border border-white"></span>
+          </div>
+          <span class="font-mono text-[11px] text-hackCyan">dpsn-hackclub — bash</span>
+        </div>
+
+        <div id="terminalOut" class="font-mono text-[13px] leading-relaxed text-dpsLightGreen space-y-1"></div>
+
+        <div class="flex items-center gap-2 mt-3 border-t-2 border-dpsGreen pt-3">
+          <span class="font-mono text-xs text-hackRed shrink-0">dpsn@hackclub:~$</span>
+          <input id="terminalInput" type="text" autocomplete="off" placeholder="type a command…"
+                 class="flex-1 bg-transparent outline-none font-mono text-sm text-hackYellow placeholder:text-dpsGreen">
+          <button id="termRun" class="nb-btn bg-hackYellow text-ink font-black text-[11px] uppercase px-3 py-1">Run</button>
+        </div>
+
+        <div class="flex flex-wrap gap-2 mt-4">
+          <button class="nb-btn bg-hackCyan text-ink font-bold text-[11px] uppercase px-3 py-1" data-cmd="help">help</button>
+          <button class="nb-btn bg-hackPink text-white font-bold text-[11px] uppercase px-3 py-1" data-cmd="whoami">whoami</button>
+          <button class="nb-btn bg-white text-ink font-bold text-[11px] uppercase px-3 py-1" data-cmd="projects">projects</button>
+          <button class="nb-btn bg-dpsGreen text-white font-bold text-[11px] uppercase px-3 py-1" data-cmd="meetings">meetings</button>
+          <button class="nb-btn bg-hackYellow text-ink font-bold text-[11px] uppercase px-3 py-1" data-cmd="sudo make pizza">sudo make pizza</button>
+          <button class="nb-btn bg-ink text-hackCyan font-bold text-[11px] uppercase px-3 py-1 border-white" data-cmd="clear">clear</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PERKS ============ -->
+<section id="perks" class="relative bg-hackYellow bg-stripes border-b-4 border-ink py-20 px-5 md:px-10">
+  <div class="max-w-6xl mx-auto">
+    <div class="text-center mb-14">
+      <span class="inline-block bg-ink text-hackYellow font-mono text-xs tracking-widest uppercase px-3 py-1 rotate-1">// 02 · THE VIBE</span>
+      <h2 class="text-4xl md:text-6xl font-black mt-5 text-ink leading-none">What we actually do</h2>
+      <p class="font-mono text-sm text-ink/80 mt-3">(spoiler: not attendance)</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-10">
+      <div class="nb bg-white p-7 -rotate-1 md:mt-6 relative">
+        <div class="absolute -top-5 -left-4 bg-hackPink text-white font-vt text-lg px-3 border-3 border-ink nb-static -rotate-6">01</div>
+        <div class="text-5xl mb-4 bouncy">👾</div>
+        <h3 class="text-2xl font-black mb-3 text-ink">Build weeeeird stuff</h3>
+        <p class="text-ink/80 font-medium">Creative coding, web experiments, hardware builds, and workshop projects. Hack Club is about making cool things, learning by building, and sharing what you ship.</p>
+        <div class="mt-6 pt-4 border-t-2 border-ink font-mono text-[11px] font-bold text-hackRed">#creative-coding #ship-it</div>
+      </div>
+
+      <div class="nb bg-hackRed p-7 rotate-1 relative">
+        <div class="absolute -top-5 -right-4 bg-hackCyan text-ink font-vt text-lg px-3 nb-static rotate-6">02</div>
+        <div class="text-5xl mb-4 bouncy" style="animation-delay:.2s">🍕</div>
+        <h3 class="text-2xl font-black mb-3 text-white">Free gear &amp; YSWS grants</h3>
+        <p class="text-white/95 font-medium">Hack Club's global "You Ship, We Ship" programs mail real hardware, domains and swag to students who build. Yes, to Nacharam. Yes, actually free.</p>
+        <div class="mt-6 pt-4 border-t-2 border-ink font-mono text-[11px] font-bold text-hackYellow">#ysws #free-hardware</div>
+      </div>
+
+      <div class="nb bg-hackCyan p-7 -rotate-2 md:mt-10 relative">
+        <div class="absolute -top-5 -left-4 bg-ink text-hackYellow font-vt text-lg px-3 nb-static rotate-3">03</div>
+        <div class="text-5xl mb-4 bouncy" style="animation-delay:.4s">⚡</div>
+        <h3 class="text-2xl font-black mb-3 text-ink">Zero lectures, ever</h3>
+        <p class="text-ink/80 font-medium">No syllabus, no unit test, no "this will come in the exam". Lofi on the speaker, laptops open, seniors helping juniors. That's the whole format.</p>
+        <div class="mt-6 pt-4 border-t-2 border-ink font-mono text-[11px] font-bold text-hackRed">#chill-space #peer-learning</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PROJECTS ============ -->
+<section id="projects" class="relative bg-ink bg-checker border-b-4 border-ink py-20 px-5 md:px-10 overflow-hidden">
+  <div class="max-w-6xl mx-auto">
+    <div class="flex flex-wrap items-end justify-between gap-6 mb-4">
+      <div>
+        <span class="inline-block bg-hackYellow text-ink font-mono text-xs tracking-widest uppercase px-3 py-1 -rotate-2">// 03 · THE WORKSHOPS</span>
+        <h2 class="text-4xl md:text-6xl font-black mt-5 text-white leading-none">Workshops built with <span class="text-hackYellow">Hack Club</span></h2>
+      </div>
+      <div class="flex gap-3">
+        <button id="railPrev" class="nb-btn bg-white text-ink font-black px-4 py-2" aria-label="Previous projects"><i class="fa-solid fa-arrow-left"></i></button>
+        <button id="railNext" class="nb-btn bg-hackYellow text-ink font-black px-4 py-2" aria-label="Next projects"><i class="fa-solid fa-arrow-right"></i></button>
+      </div>
+    </div>
+
+    <div id="rail" class="rail"></div>
+
+    <p class="font-mono text-xs text-white/60 text-center">← swipe / drag / use the arrows →</p>
+  </div>
+</section>
+
+<!-- ============ MEETINGS + LEADERSHIP ============ -->
+<section id="meetings" class="relative bg-dpsGreen bg-grid border-b-4 border-ink py-20 px-5 md:px-10">
+  <div class="max-w-6xl mx-auto">
+    <div class="text-center mb-12">
+      <span class="inline-block bg-ink text-hackCyan font-mono text-xs tracking-widest uppercase px-3 py-1 rotate-1">// 04 · WEEKLY MEETINGS</span>
+      <h2 class="text-4xl md:text-6xl font-black mt-5 text-white leading-none" style="text-shadow:4px 4px 0 #0d0d0d">Where to find us</h2>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-10 items-stretch">
+      <div class="nb bg-white p-8 -rotate-1">
+        <div class="space-y-7">
+          <div>
+            <h4 class="font-mono text-[11px] uppercase tracking-widest font-black text-hackRed">Venue</h4>
+            <p class="text-xl font-black mt-1 text-ink"><i class="fa-solid fa-location-dot text-hackRed mr-2"></i>Computer / AI Lab, DPS Nacharam</p>
+          </div>
+          <div>
+            <h4 class="font-mono text-[11px] uppercase tracking-widest font-black text-hackRed">Meeting Frequency</h4>
+            <p class="text-xl font-black mt-1 text-ink"><i class="fa-solid fa-clock text-dpsGreen mr-2"></i>Every Week</p>
+          </div>
+          <div>
+            <h4 class="font-mono text-[11px] uppercase tracking-widest font-black text-hackRed">Eligibility</h4>
+            <p class="text-xl font-black mt-1 text-ink"><i class="fa-solid fa-users text-hackYellow mr-2"></i>Grades 9–12</p>
+          </div>
+          <div>
+            <h4 class="font-mono text-[11px] uppercase tracking-widest font-black text-hackRed">Bring</h4>
+            <p class="text-xl font-black mt-1 text-ink"><i class="fa-solid fa-laptop-code text-hackPink mr-2"></i>A laptop if you have one. Otherwise, just show up.</p>
+          </div>
+        </div>
+
+        <div class="mt-8 flex flex-wrap gap-3">
+          <button class="nb-btn bg-hackCyan text-ink font-black uppercase text-xs px-4 py-2" data-sass-btn="Add to calendar">
+            <i class="fa-regular fa-calendar-plus mr-1"></i> Add to calendar
+          </button>
+          <button class="nb-btn bg-hackPink text-white font-black uppercase text-xs px-4 py-2" data-sass-btn="Tell my friends">
+            <i class="fa-solid fa-bullhorn mr-1"></i> Tell my friends
+          </button>
+        </div>
+      </div>
+
+      <!-- CLUB LEADERSHIP -->
+      <div class="nb bg-hackYellow p-8 rotate-1 relative">
+        <div class="absolute -top-6 -right-5 bg-hackRed text-white font-vt text-2xl px-4 py-1 nb-static rotate-12 floaty" style="--rot:12deg">THE CREW!</div>
+        <p class="font-vt text-4xl text-ink leading-none mb-2">MEET THE CREW</p>
+        <p class="font-mono text-xs text-ink/80 mb-6">The people keeping the code, chaos, and community moving.</p>
+        <div class="space-y-4">
+          <div class="bg-white border-3 border-ink p-3" style="border-width:3px">
+            <p class="font-mono text-[10px] uppercase tracking-widest text-hackRed font-black">Mentor</p>
+            <p class="text-xl font-black text-ink">Mr. Shiva Prasad</p>
+            <p class="text-sm font-medium text-ink/70">Mentor of our Hack Club</p>
+          </div>
+          <div class="bg-white border-3 border-ink p-3" style="border-width:3px">
+            <p class="font-mono text-[10px] uppercase tracking-widest text-hackRed font-black">Founder &amp; President</p>
+            <p class="text-xl font-black text-ink">U. Karthik</p>
+          </div>
+          <div class="bg-white border-3 border-ink p-3" style="border-width:3px">
+            <p class="font-mono text-[10px] uppercase tracking-widest text-hackRed font-black">Co-founder &amp; President of Operations</p>
+            <p class="text-xl font-black text-ink">Vrishank Reddy</p>
+          </div>
+          <div class="bg-white border-3 border-ink p-3" style="border-width:3px">
+            <p class="font-mono text-[10px] uppercase tracking-widest text-hackRed font-black">Co-founder &amp; President of Technology</p>
+            <p class="text-xl font-black text-ink">Jai Singh</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section id="faq" class="relative bg-white bg-dots border-b-4 border-ink py-20 px-5 md:px-10">
+  <div class="max-w-3xl mx-auto">
+    <div class="text-center mb-12">
+      <span class="inline-block bg-ink text-hackPink font-mono text-xs tracking-widest uppercase px-3 py-1 -rotate-1">// 05 · FAQ</span>
+      <h2 class="text-4xl md:text-6xl font-black mt-5 text-ink leading-none">Questions you're<br>definitely thinking</h2>
+    </div>
+    <div id="faqList" class="space-y-5"></div>
+
+    <div class="text-center mt-10">
+      <button class="nb-btn bg-hackCyan text-ink font-black uppercase text-xs px-5 py-3" id="faqToggleAll">Expand everything</button>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FOOTER ============ -->
+<footer class="relative bg-ink bg-stripes py-14 px-5 md:px-10 border-t-4 border-hackYellow">
+  <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8 text-center md:text-left">
+    <div class="flex items-center gap-3 bg-white p-2 nb-static -rotate-2">
+      <img src="dps.png" alt="DPS Nacharam logo" data-dps class="h-10 w-auto"
+           onerror="this.onerror=null;this.src=DPS_FALLBACK;">
+      <span class="text-2xl font-black text-ink">×</span>
+      <img src="hackclub.png" alt="Hack Club logo" class="h-10 w-auto"
+           onerror="this.onerror=null;this.src='https://assets.hackclub.com/icon-rounded.png';">
+    </div>
+
+    <p class="text-white text-sm max-w-md font-medium">
+      A student-led chapter at <strong class="text-hackYellow">DPS Nacharam</strong>, part of the global
+      <a href="https://hackclub.com" target="_blank" rel="noopener" class="text-hackRed font-black underline hover:text-hackCyan">Hack Club</a> network of high-school hackers.
+      <br><span class="font-mono text-[11px] text-white/60">Built with too much caffeine by DPSN students · Service before self, code before sleep.</span>
+    </p>
+
+    <div class="flex gap-3">
+      <a href="https://github.com/hackclub" target="_blank" rel="noopener" aria-label="GitHub" class="nb-btn bg-white text-ink w-11 h-11 flex items-center justify-center text-lg"><i class="fa-brands fa-github"></i></a>
+      <a href="https://hackclub.com/slack/" target="_blank" rel="noopener" aria-label="Slack" class="nb-btn bg-hackPink text-white w-11 h-11 flex items-center justify-center text-lg"><i class="fa-brands fa-slack"></i></a>
+      <a href="https://instagram.com" target="_blank" rel="noopener" aria-label="Instagram" class="nb-btn bg-hackYellow text-ink w-11 h-11 flex items-center justify-center text-lg"><i class="fa-brands fa-instagram"></i></a>
+      <a href="https://discord.com" target="_blank" rel="noopener" aria-label="Discord" class="nb-btn bg-hackCyan text-ink w-11 h-11 flex items-center justify-center text-lg"><i class="fa-brands fa-discord"></i></a>
+    </div>
+  </div>
+
+  <div class="max-w-6xl mx-auto mt-10 pt-6 border-t-2 border-white/20 flex flex-col sm:flex-row items-center justify-between gap-4">
+    <p class="font-mono text-[11px] text-white/50">© <span id="year"></span> Hack Club DPS Nacharam. Not affiliated with your report card.</p>
+    <button id="backTop" class="nb-btn bg-hackYellow text-ink font-black uppercase text-xs px-4 py-2 hidden-btn">
+      Back to top <i class="fa-solid fa-arrow-up ml-1"></i>
+    </button>
+  </div>
+</footer>
+
+
+<!-- ============ AI CHATBOT ============ -->
+<div id="aiChatWidget" aria-live="polite">
+  <section id="aiChatPanel" class="hidden nb-static bg-white" aria-label="Ask the DPSN website assistant">
+    <div class="bg-hackCyan border-b-4 border-ink px-4 py-3 flex items-center justify-between">
+      <div>
+        <p class="font-vt text-2xl text-ink leading-none">Vlen AI</p>
+        <p class="font-mono text-[10px] uppercase tracking-wider text-ink/70">Website assistant</p>
+      </div>
+      <button id="aiChatClose" type="button" class="nb-btn bg-white text-ink w-8 h-8 font-black" aria-label="Close chatbot">×</button>
+    </div>
+    <div id="aiChatMessages" class="flex-1 overflow-y-auto p-3 space-y-3 bg-ink" role="log" aria-live="polite"></div>
+    <form id="aiChatForm" class="p-3 bg-hackYellow border-t-4 border-ink">
+      <label for="aiChatInput" class="sr-only">Ask a question about this website</label>
+      <div class="flex gap-2 items-end">
+        <textarea id="aiChatInput" rows="2" maxlength="800" required
+          placeholder="Ask about meetings, projects, or the crew..."
+          class="flex-1 resize-none px-3 py-2 bg-white border-3 border-ink outline-none font-medium text-sm"
+          style="border-width:3px"></textarea>
+        <button id="aiChatSend" type="submit" class="nb-btn bg-hackRed text-white font-black px-3 py-2 uppercase text-xs">Send</button>
+      </div>
+      <p id="aiChatStatus" class="font-mono text-[10px] text-ink/70 mt-2 min-h-[1rem]" role="status"></p>
+    </form>
+  </section>
+  <div id="aiGreeting" role="status" aria-live="polite">
+    <button id="aiGreetingClose" type="button" aria-label="Dismiss greeting">×</button>
+    <strong>Hi there!</strong> I’m Vlen AI, and I’m here to help. Ask me anything about the club, projects, meetings, or the crew.
+  </div>
+  <button id="aiChatToggle" type="button" class="nb-btn" aria-expanded="false" aria-controls="aiChatPanel" aria-label="Open Vlen AI chatbot">
+    <img class="chatbot-logo" src="ai.png" alt="" aria-hidden="true">
+  </button>
+</div>
+
+<!-- ============ TOASTS ============ -->
+<div id="toastZone"></div>
+
+<!-- ============ PROJECT DEMO MODAL ============ -->
+<div class="modal" id="demoModal" role="dialog" aria-modal="true" aria-labelledby="demoTitle">
+  <div class="modal-card nb-static bg-white w-full max-w-lg relative">
+    <div class="border-b-4 border-ink px-6 py-4 flex items-center justify-between" id="demoHeader">
+      <h3 id="demoTitle" class="font-vt text-3xl text-ink leading-none">PROJECT</h3>
+      <button data-close-modal aria-label="Close" class="nb-btn bg-white text-ink w-9 h-9 font-black">✕</button>
+    </div>
+    <div class="p-6">
+      <div id="demoEmoji" class="text-7xl text-center mb-4 bouncy">🕹️</div>
+      <p id="demoDesc" class="font-medium text-ink mb-4"></p>
+      <div class="bg-ink p-4 font-mono text-xs text-dpsLightGreen border-4 border-ink" id="demoStack"></div>
+      <div class="flex flex-wrap gap-3 mt-6">
+        <button class="nb-btn bg-hackYellow text-ink font-black uppercase text-xs px-4 py-3" id="demoRun">Run demo</button>
+        <button class="nb-btn bg-hackCyan text-ink font-black uppercase text-xs px-4 py-3" data-sass-btn="View source">View source</button>
+      </div>
+      <p id="demoOut" class="hidden font-mono text-xs mt-4 bg-dpsLightGreen border-2 border-ink px-3 py-2"></p>
+    </div>
+  </div>
+</div>
+
+<script>
+window.MathJax = { tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] }, options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] } };
+</script>
+<script async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+<script>
+/* Inline SVG fallback logo (used if dps.png is missing) */
+const DPS_FALLBACK = "data:image/svg+xml;utf8," + encodeURIComponent(
+  '<svg xmlns="http://www.w3.org/2000/svg" width="120" height="48"><rect width="120" height="48" fill="#008751"/><text x="60" y="32" font-family="monospace" font-size="22" font-weight="bold" fill="#ffffff" text-anchor="middle">DPS-N</text></svg>');
+document.querySelectorAll("img[data-dps]").forEach(img => { if (!img.complete || img.naturalWidth === 0) img.src = DPS_FALLBACK; });
+
+/* =========================================================
+   0. TOASTS
+   ========================================================= */
+const toastZone = document.getElementById('toastZone');
+const toastColors = [
+  ['bg-hackYellow','text-ink'],
+  ['bg-hackCyan','text-ink'],
+  ['bg-hackPink','text-white'],
+  ['bg-hackRed','text-white'],
+  ['bg-white','text-ink']
+];
+let toastIdx = 0;
+
+function toast(title, body, emoji){
+  const [bg, fg] = toastColors[toastIdx++ % toastColors.length];
+  const el = document.createElement('div');
+  el.className = `toast nb-static ${bg} ${fg} p-4 pr-9 relative -rotate-1`;
+  el.innerHTML = `
+    <button class="absolute top-1.5 right-2 font-black text-lg leading-none" aria-label="Dismiss">×</button>
+    <p class="font-vt text-2xl leading-none">${emoji || '⚡'} ${title}</p>
+    <p class="font-mono text-[11px] mt-1 leading-snug">${body}</p>`;
+  el.querySelector('button').addEventListener('click', () => el.remove());
+  toastZone.appendChild(el);
+  setTimeout(() => { el.style.transition='opacity .3s'; el.style.opacity='0'; setTimeout(()=>el.remove(),300); }, 5200);
+}
+
+/* Sassy responses for fake / fun buttons */
+const sassBank = {
+  "I prefer boring classes": ["Bold choice 🥱","Enjoy underlining keywords in your notebook. We'll be over here shipping."],
+  "Add to calendar": ["Calendar? Cute","Weekly sessions happen in the computer lab. Your brain is the calendar now."],
+  "Tell my friends": ["Recruiter mode ON 📣","Screenshot this page, send it in the class group, take full credit. We allow it."],
+  "View source": ["Source code?","It's on a laptop in the CS lab with 47 unsaved tabs. Come by and we'll show you."]
+};
+function sass(key){
+  const [t,b] = sassBank[key] || ["Nice click ✨","That button exists purely for vibes. You passed the vibe check."];
+  toast(t, b, '🔥');
+}
+document.querySelectorAll('[data-sass-btn]').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    sass(btn.getAttribute('data-sass-btn'));
+    btn.classList.add('shake');
+    setTimeout(()=>btn.classList.remove('shake'), 420);
+  });
+});
+document.querySelectorAll('[data-sass]').forEach(st=>{
+  st.addEventListener('click', ()=> toast('Sticker tapped', st.getAttribute('data-sass'), '🏷️'));
+});
+
+/* =========================================================
+   1. SMOOTH SCROLL NAV
+   ========================================================= */
+document.querySelectorAll('a[data-scroll]').forEach(a=>{
+  a.addEventListener('click', e=>{
+    e.preventDefault();
+    const id = a.getAttribute('href');
+    const target = id === '#top' ? document.body : document.querySelector(id);
+    if(!target) return;
+    const y = id === '#top' ? 0 : target.getBoundingClientRect().top + window.scrollY - 76;
+    window.scrollTo({ top:y, behavior:'smooth' });
+  });
+});
+
+const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+const mobileNavMenu = document.getElementById('mobileNavMenu');
+function setMobileMenu(open){
+  if(!mobileMenuToggle || !mobileNavMenu) return;
+  mobileNavMenu.classList.toggle('open', open);
+  mobileNavMenu.setAttribute('aria-hidden', String(!open));
+  mobileMenuToggle.setAttribute('aria-expanded', String(open));
+  mobileMenuToggle.setAttribute('aria-label', open ? 'Close navigation menu' : 'Open navigation menu');
+  const icon = mobileMenuToggle.querySelector('.mobile-menu-icon');
+  if(icon) icon.textContent = open ? '×' : '☰';
+}
+mobileMenuToggle?.addEventListener('click', ()=> setMobileMenu(!mobileNavMenu.classList.contains('open')));
+mobileNavMenu?.querySelectorAll('a[data-scroll]').forEach(link=> link.addEventListener('click', ()=> setMobileMenu(false)));
+window.addEventListener('resize', ()=> { if(window.innerWidth >= 768) setMobileMenu(false); });
+
+/* =========================================================
+   2. LIVE COUNTERS
+   ========================================================= */
+function countTo(el, target, suffix){
+  let cur = 0;
+  const step = Math.max(1, Math.round(target/48));
+  const t = setInterval(()=>{
+    cur += step;
+    if(cur >= target){ cur = target; clearInterval(t); }
+    el.textContent = cur + (suffix||'');
+  }, 28);
+}
+let countersDone = false;
+function startCounters(){
+  if(countersDone) return;
+  countersDone = true;
+  countTo(document.getElementById('counterMembers'), 40, '+');
+  countTo(document.getElementById('counterProjects'), 5, '');
+  countTo(document.getElementById('counterHours'), 100, '+');
+}
+window.addEventListener('load', ()=> setTimeout(startCounters, 300));
+
+/* =========================================================
+   3. TERMINAL
+   ========================================================= */
+const out = document.getElementById('terminalOut');
+const input = document.getElementById('terminalInput');
+
+function line(html, cls){
+  const p = document.createElement('p');
+  p.className = cls || '';
+  p.innerHTML = html;
+  out.appendChild(p);
+  out.scrollTop = out.scrollHeight;
+}
+function prompt(cmd){
+  line(`<span class="text-hackRed">dpsn@hackclub</span>:<span class="text-hackCyan">~$</span> <span class="text-white">${cmd}</span>`);
+}
+
+const commands = {
+  help(){
+    line('<span class="text-hackYellow">Available commands:</span>');
+    line('&nbsp;&nbsp;<span class="text-hackCyan">help</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;— show this list');
+    line('&nbsp;&nbsp;<span class="text-hackCyan">whoami</span>&nbsp;&nbsp;&nbsp;— who is this club, really');
+    line('&nbsp;&nbsp;<span class="text-hackCyan">projects</span>&nbsp;— jump to the project gallery');
+    line('&nbsp;&nbsp;<span class="text-hackCyan">meetings</span>&nbsp;— when &amp; where we meet');
+    line('&nbsp;&nbsp;<span class="text-hackCyan">perks</span>&nbsp;&nbsp;&nbsp;&nbsp;— what you get out of it');
+    line('&nbsp;&nbsp;<span class="text-hackCyan">chaos</span>&nbsp;&nbsp;&nbsp;&nbsp;— toggle chaos mode');
+    line('&nbsp;&nbsp;<span class="text-hackCyan">clear</span>&nbsp;&nbsp;&nbsp;&nbsp;— wipe the screen');
+  },
+  whoami(){
+    line('> <span class="text-hackYellow">hacker@dps-nacharam</span>');
+    line('> Member of a 100% student-run, 0% boring club.');
+    line('> Motto: <span class="text-hackPink">"Service before self. Code before sleep."</span>');
+  },
+  projects(){
+    line('> Loading gallery… <span class="text-hackYellow">42 projects shipped</span>');
+    document.querySelector('#projects').scrollIntoView({behavior:'smooth'});
+  },
+  meetings(){
+    line('> <span class="text-hackYellow">WHEN:</span> Weekly sessions in the computer lab');
+    line('> <span class="text-hackYellow">WHERE:</span> Computer / Activity Lab, DPS Nacharam');
+    line('> <span class="text-hackYellow">WHO:</span> Grades 9–12');
+  },
+  perks(){
+    line('> free hardware (YSWS grants) ✅');
+    line('> stickers, domains, swag ✅');
+    line('> pizza (occasionally, ration applies) 🍕');
+    line('> lectures ❌');
+  },
+  chaos(){
+    toggleChaos();
+    line('> chaos_mode = <span class="text-hackPink">' + (document.body.classList.contains('chaos') ? 'ON' : 'OFF') + '</span>');
+  },
+  clear(){ out.innerHTML = ''; boot(true); },
+  'sudo make pizza'(){
+    line('> <span class="text-hackRed">Permission denied:</span> pizza budget approval pending.');
+    line('> Try again when the club leads are hungry.');
+    toast('sudo denied','Pizza requires club-lead privileges. Show up and negotiate.','!');
+  }
+};
+
+function runCommand(raw){
+  const cmd = (raw || '').trim().toLowerCase();
+  if(!cmd) return;
+  prompt(cmd);
+  if(commands[cmd]) commands[cmd]();
+  else {
+    line(`> <span class="text-hackRed">command not found: ${cmd.replace(/[<>]/g,'')}</span>`);
+    line('> type <span class="text-hackCyan">help</span> to see what actually works.');
+  }
+}
+
+function boot(short){
+  line('<span class="text-hackYellow">Hack Club DPSN shell v2.6 — type "help" to begin.</span>');
+  if(!short){
+    prompt('cat ethos.txt');
+    line('<span class="text-ink bg-hackYellow px-2 py-1 inline-block font-bold">"Service before self. Code before sleep."</span>');
+    prompt('status --club');
+    line('> <span class="text-hackCyan">100% student run. 0% boring.</span>');
+  }
+}
+boot(false);
+
+document.getElementById('termRun').addEventListener('click', ()=>{ runCommand(input.value); input.value=''; });
+input.addEventListener('keydown', e=>{ if(e.key === 'Enter'){ runCommand(input.value); input.value=''; }});
+document.querySelectorAll('[data-cmd]').forEach(b=>{
+  b.addEventListener('click', ()=> runCommand(b.getAttribute('data-cmd')));
+});
+
+/* =========================================================
+   4. PROJECT CAROUSEL
+   ========================================================= */
+const projects = [
+  { title:'Fusering', emoji:'✹', sticker:'bg-hackPink text-ink -rotate-6', by:'November workshop', bg:'bg-hackYellow', fg:'text-ink',
+    desc:'A Hack Club workshop where students learn by making and shipping a creative project of their own.',
+    stack:'stack: creative coding · web tools · build-first learning',
+    run:'> Fusering loaded. Idea selected. Time to ship.' },
+  { title:'Boba Drops', emoji:'◉', sticker:'bg-hackYellow text-ink rotate-6', by:'November workshop', bg:'bg-hackCyan', fg:'text-ink',
+    desc:'A playful project workshop inspired by Hack Club’s maker-first approach: build something interactive, then share it.',
+    stack:'stack: HTML · CSS · JavaScript · imagination',
+    run:'> Boba Drops online. Drop created. Project shipped.' },
+  { title:'Vibes', emoji:'✷', sticker:'bg-white text-hackPink -rotate-3', by:'November workshop', bg:'bg-hackPink', fg:'text-white',
+    desc:'A creative coding workshop for exploring personal ideas, experimenting freely, and turning a concept into a working project.',
+    stack:'stack: creative coding · pixels · good energy',
+    run:'> Vibes activated. Prototype is looking alive.' },
+  { title:'Bake Build', emoji:'✚', sticker:'bg-hackCyan text-ink rotate-3', by:'December workshop', bg:'bg-white', fg:'text-ink',
+    desc:'A December workshop that brings the Hack Club spirit to hands-on building: make, test, improve, and show what you made.',
+    stack:'stack: prototyping · iteration · maker mindset',
+    run:'> Bake Build started. First version ready for testing.' },
+  { title:'Sprig', emoji:'❯', sticker:'bg-hackYellow text-hackRed rotate-6', by:'December workshop', bg:'bg-hackRed', fg:'text-white',
+    desc:'A December Hack Club workshop focused on creating a small, shareable project and learning through the process of shipping it.',
+    stack:'stack: JavaScript · creative tools · ship it',
+    run:'> Sprig sprouted. Build complete enough to share.' }
+];
+
+const rail = document.getElementById('rail');
+projects.forEach((p, i)=>{
+  const card = document.createElement('article');
+  card.className = `nb ${p.bg} p-6 flex flex-col justify-between ${i % 2 ? 'rotate-1' : '-rotate-1'}`;
+  card.innerHTML = `
+    <div>
+      <div class="workshop-sticker ${p.sticker || 'bg-white text-ink'} text-5xl mb-4">${p.emoji}</div>
+      <h3 class="text-2xl font-black ${p.fg} leading-tight">${p.title}</h3>
+      <p class="font-mono text-[11px] uppercase tracking-widest ${p.fg} opacity-70 mt-1">${p.by}</p>
+      <p class="${p.fg} mt-3 font-medium text-sm">${p.desc}</p>
+    </div>
+    <button class="nb-btn bg-ink text-hackYellow font-black uppercase text-xs px-4 py-2 mt-6 self-start">Demo <i class="fa-solid fa-play ml-1"></i></button>`;
+  card.querySelector('button').addEventListener('click', ()=> openDemo(i));
+  rail.appendChild(card);
+});
+
+document.getElementById('railPrev').addEventListener('click', ()=> rail.scrollBy({left:-348, behavior:'smooth'}));
+document.getElementById('railNext').addEventListener('click', ()=> rail.scrollBy({left: 348, behavior:'smooth'}));
+
+let currentDemo = 0;
+function openDemo(i){
+  currentDemo = i;
+  const p = projects[i];
+  document.getElementById('demoTitle').textContent = p.title.toUpperCase();
+  document.getElementById('demoHeader').className = `border-b-4 border-ink px-6 py-4 flex items-center justify-between ${p.bg}`;
+  document.getElementById('demoTitle').className = `font-vt text-3xl leading-none ${p.fg}`;
+  document.getElementById('demoEmoji').textContent = p.emoji;
+  document.getElementById('demoDesc').textContent = p.desc;
+  document.getElementById('demoStack').textContent = p.stack;
+  const o = document.getElementById('demoOut');
+  o.classList.add('hidden'); o.textContent = '';
+  openModal('demoModal');
+}
+document.getElementById('demoRun').addEventListener('click', ()=>{
+  const o = document.getElementById('demoOut');
+  o.classList.remove('hidden');
+  o.textContent = projects[currentDemo].run;
+  toast('Demo running', projects[currentDemo].title + ' booted successfully. No bugs. Probably.', '▶️');
+});
+
+/* =========================================================
+   5. FAQ ACCORDION
+   ========================================================= */
+const faqs = [
+  { q:'Do I need coding experience?', a:'Zero. Genuinely zero. You can join without prior experience and learn by building something small and slightly broken. That is exactly the plan.', bg:'bg-hackYellow', fg:'text-ink' },
+  { q:'Is this an official school club?', a:'Yes — it runs at DPS Nacharam with school support in the computer/activity lab, and it is officially part of the global Hack Club network. It is student-led, which means members decide what gets built.', bg:'bg-hackCyan', fg:'text-ink' },
+  { q:'Do we actually get free pizza?', a:'Sometimes pizza, reliably stickers. Hack Club also ships real hardware, free domains and swag through YSWS ("You Ship, We Ship") programs when you build and ship a project.', bg:'bg-hackPink', fg:'text-white' },
+  { q:'Will this affect my marks or attendance?', a:'Not at all. No attendance register, no grading, no internal assessment. Come when you can and learn at your own pace.', bg:'bg-white', fg:'text-ink' },
+  { q:'I do not own a laptop. Can I still join?', a:'Yes. The lab has machines, and pair programming with another member is honestly the fastest way to learn anyway. Just show up.', bg:'bg-dpsGreen', fg:'text-white' },
+  { q:'What do we build in a normal session?', a:'Whatever the room is excited about: browser games, Discord bots, personal sites, hardware experiments, hackathon entries. Someone demos, everyone helps, things get shipped.', bg:'bg-hackRed', fg:'text-white' }
+];
+
+const faqList = document.getElementById('faqList');
+faqs.forEach((f, i)=>{
+  const item = document.createElement('div');
+  item.className = `acc-item nb-static ${f.bg} ${i % 2 ? 'rotate-1' : '-rotate-1'}`;
+  item.innerHTML = `
+    <button class="w-full flex items-center justify-between gap-4 text-left px-5 py-4" aria-expanded="false">
+      <span class="font-black text-lg ${f.fg}">${f.q}</span>
+      <span class="acc-icon font-black text-2xl ${f.fg} shrink-0">+</span>
+    </button>
+    <div class="acc-panel"><p class="px-5 pb-5 font-medium ${f.fg} opacity-90">${f.a}</p></div>`;
+  const btn = item.querySelector('button');
+  btn.addEventListener('click', ()=>{
+    const open = item.classList.toggle('open');
+    btn.setAttribute('aria-expanded', String(open));
+  });
+  faqList.appendChild(item);
+});
+
+const faqToggleAll = document.getElementById('faqToggleAll');
+faqToggleAll.addEventListener('click', ()=>{
+  const items = [...document.querySelectorAll('.acc-item')];
+  const shouldOpen = items.some(it => !it.classList.contains('open'));
+  items.forEach(it=>{
+    it.classList.toggle('open', shouldOpen);
+    it.querySelector('button').setAttribute('aria-expanded', String(shouldOpen));
+  });
+  faqToggleAll.textContent = shouldOpen ? 'Collapse everything' : 'Expand everything';
+});
+
+/* =========================================================
+   6. MODALS
+   ========================================================= */
+function openModal(id){
+  document.getElementById(id).classList.add('show');
+  document.body.style.overflow = 'hidden';
+}
+function closeModals(){
+  document.querySelectorAll('.modal').forEach(m => m.classList.remove('show'));
+  document.body.style.overflow = '';
+}
+document.querySelectorAll('[data-close-modal]').forEach(b=> b.addEventListener('click', closeModals));
+document.querySelectorAll('.modal').forEach(m=>{
+  m.addEventListener('click', e=>{ if(e.target === m) closeModals(); });
+});
+document.addEventListener('keydown', e=>{ if(e.key === 'Escape') closeModals(); });
+
+/* =========================================================
+   8. CHAOS MODE
+   ========================================================= */
+const chaosLabel = document.getElementById('chaosLabel');
+function toggleChaos(){
+  const on = document.body.classList.toggle('chaos');
+  if(chaosLabel) chaosLabel.textContent = 'Chaos mode: ' + (on ? 'ON' : 'OFF');
+  toast(on ? 'CHAOS ENGAGED' : 'Chaos disengaged',
+        on ? 'Colours are spinning, stickers are vibrating. This is the correct amount of chaos.'
+           : 'Back to merely very loud. Click again if you miss it.',
+        on ? '🌀' : '😌');
+}
+// Chaos mode remains available through the terminal and Konami easter egg.
+
+/* =========================================================
+   9. BACK TO TOP + YEAR
+   ========================================================= */
+const backTop = document.getElementById('backTop');
+backTop.addEventListener('click', ()=> window.scrollTo({top:0, behavior:'smooth'}));
+window.addEventListener('scroll', ()=>{
+  backTop.classList.toggle('hidden-btn', window.scrollY < 600);
+  if(window.scrollY > 200) startCounters();
+});
+document.getElementById('year').textContent = new Date().getFullYear();
+
+/* =========================================================
+   10. KONAMI EASTER EGG
+   ========================================================= */
+const konami = ['ArrowUp','ArrowUp','ArrowDown','ArrowDown','ArrowLeft','ArrowRight','ArrowLeft','ArrowRight','b','a'];
+let kIdx = 0;
+document.addEventListener('keydown', e=>{
+  kIdx = (e.key === konami[kIdx] || e.key.toLowerCase() === konami[kIdx]) ? kIdx + 1 : 0;
+  if(kIdx === konami.length){
+    kIdx = 0;
+    if(!document.body.classList.contains('chaos')) toggleChaos();
+    toast('KONAMI UNLOCKED','You found the secret. Mention "up up down down" at the next meeting for a sticker. 🕹️','🎮');
+  }
+});
+
+
+/* =========================================================
+   11. WEBSITE AI CHATBOT
+   ========================================================= */
+const aiChatWidget = document.getElementById('aiChatWidget');
+const aiChatPanel = document.getElementById('aiChatPanel');
+const aiChatToggle = document.getElementById('aiChatToggle');
+const aiGreeting = document.getElementById('aiGreeting');
+const aiGreetingClose = document.getElementById('aiGreetingClose');
+const aiChatClose = document.getElementById('aiChatClose');
+const aiChatMessages = document.getElementById('aiChatMessages');
+const aiChatForm = document.getElementById('aiChatForm');
+const aiChatInput = document.getElementById('aiChatInput');
+
+aiChatInput.addEventListener('keydown', (event)=>{
+  if(event.key === 'Enter' && !event.shiftKey){
+    event.preventDefault();
+    aiChatForm.requestSubmit();
+  }
+});
+const aiChatSend = document.getElementById('aiChatSend');
+const aiChatStatus = document.getElementById('aiChatStatus');
+const aiChatHistory = [];
+
+function aiChatAddMessage(role, text, extraClass=''){
+  const bubble = document.createElement('div');
+  bubble.className = `ai-chat-bubble ${role} ${extraClass} nb-static px-3 py-2 font-medium text-sm`;
+  bubble.textContent = text;
+  aiChatMessages.appendChild(bubble);
+  if(window.MathJax && window.MathJax.typesetPromise) window.MathJax.typesetPromise([bubble]).catch(()=>{});
+  aiChatMessages.scrollTop = aiChatMessages.scrollHeight;
+  return bubble;
+}
+function aiChatSetOpen(open){
+  aiChatPanel.classList.toggle('hidden', !open);
+  aiChatToggle.setAttribute('aria-expanded', String(open));
+  aiChatToggle.setAttribute('aria-label', open ? 'Close Vlen AI chatbot' : 'Open Vlen AI chatbot');
+  if(open) aiGreeting.hidden = true;
+  aiChatToggle.innerHTML = open ? '×' : '<img class="chatbot-logo" src="ai.png" alt="" aria-hidden="true">';
+  if(open){
+    if(!aiChatMessages.children.length){
+      aiChatAddMessage('assistant', "Yo. I'm Vlen AI — short answers, useful facts, zero corporate waffle. Ask me about the club, projects, meetings, or the crew.");
+    }
+    aiChatInput.focus();
+  }
+}
+aiChatToggle.addEventListener('click', ()=> aiChatSetOpen(aiChatPanel.classList.contains('hidden')));
+aiGreetingClose.addEventListener('click', ()=> { aiGreeting.hidden = true; });
+aiChatClose.addEventListener('click', ()=> aiChatSetOpen(false));
+
+/* A local fallback keeps the downloaded HTML useful without a server/API. */
+const aiLocalFacts = [
+  {keys:['meet','when','time','day'], answer:'Weekly sessions are held in the Computer / Activity Lab at DPS Nacharam.'},
+  {keys:['where','venue','location','lab'], answer:'Meet us in the Computer / Activity Lab at DPS Nacharam for weekly sessions.'},
+  {keys:['who','join','eligible','grade','experience','beginner'], answer:'Grades 9–12 are welcome, and you do not need coding experience. Bring a laptop if you have one; lab machines are available.'},
+  {keys:['project','build','make','create'], answer:'Members build browser games, Discord bots, personal sites, hardware experiments, and hackathon projects. The gallery on this page shows examples.'},
+  {keys:['free','hardware','grant','ysws','pizza','sticker','swag'], answer:'Hack Club is a U.S. 501(c)(3) nonprofit educational charity for teen makers. Its programs support students who build and share projects, with some programs offering hardware, domains, or swag.'},
+  {keys:['mark','grade','attendance','school'], answer:'There are no marks, grades, or attendance penalties. This is a student-led club focused on building and learning.'},
+  {keys:['crew','leader','mentor','president'], answer:'The crew includes Mr. Shiva Prasad (mentor), U. Karthik (Founder & President), Vrishank Reddy (Co-founder & President of Operations), and Jai Singh (Co-founder & President of Technology).'},
+  {keys:['hello','hi','hey'], answer:'Hey. I am Vlen AI, the DPSN website assistant. Ask me about meetings, projects, joining, grants, or the crew.'}
+];
+function aiLocalAnswer(question){
+  const normalized = question.toLowerCase();
+  const match = aiLocalFacts.find(item => item.keys.some(key => normalized.includes(key)));
+  return match ? match.answer : 'I can help with meetings, projects, joining, grants, marks, or the crew. Try asking one of those.';
+}
+async function aiGetAnswer(messages){
+  /* file:// pages cannot reach a relative API endpoint; answer locally instead. */
+  if(window.location.protocol === 'file:') return {answer:aiLocalAnswer(messages[messages.length - 1].content), local:true};
+  try{
+    const response = await fetch('/api/chat', {
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({messages})
+    });
+    const data = await response.json().catch(()=>({}));
+    if(!response.ok) throw new Error(data.error || 'The assistant is temporarily offline.');
+    return {answer:String(data.answer || 'I could not find that on this website.'), local:false};
+  }catch(error){
+    return {answer:aiLocalAnswer(messages[messages.length - 1].content), local:true};
+  }
+}
+
+aiChatForm.addEventListener('submit', async (event)=>{
+  event.preventDefault();
+  const text = aiChatInput.value.trim();
+  if(!text || aiChatSend.disabled) return;
+  aiChatAddMessage('user', text);
+  aiChatHistory.push({role:'user', content:text});
+  aiChatInput.value = '';
+  aiChatSend.disabled = true;
+  aiChatStatus.textContent = 'Thinking...';
+  const typing = aiChatAddMessage('assistant', 'Thinking...', 'typing');
+  try{
+    const result = await aiGetAnswer(aiChatHistory.slice(-12));
+    typing.remove();
+    const answer = result.answer;
+    aiChatAddMessage('assistant', answer);
+    aiChatHistory.push({role:'assistant', content:answer});
+    aiChatStatus.textContent = result.local ? 'Local assistant mode' : '';
+  }catch(error){
+    typing.remove();
+    aiChatAddMessage('assistant', error.message || 'The assistant is temporarily offline. Please try again.');
+    aiChatStatus.textContent = 'Request failed. Try again.';
+  }finally{
+    aiChatSend.disabled = false;
+    aiChatInput.focus();
+  }
+});
+
+/* Welcome toast */
+setTimeout(()=> toast('Yo, DPSN','Weekly sessions. Computer lab. Bring a laptop and a good idea.','!'), 1400);
+</script>
+</body>
+</html>
