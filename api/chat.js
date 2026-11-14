@@ -13,9 +13,9 @@ Website facts:
 - The club has free stickers and may have pizza. Hack Club YSWS (You Ship, We Ship) programs can provide hardware, free domains, and swag when students build and ship projects; do not promise eligibility or delivery.
 - Projects and Workshops will be announced/updated soon.
 - The club mentor is Mr. Shiva Prasad. He is the Computer Science teacher at DPS Nacharam
-- Founder and President: U. Karthik.
+- Founder and President: Karthik.
 - Co-founder and President of Operations: Vrishank Reddy.
-- Co-founder and President of Technology: Jai Singh.
+- Co-founder and President of Technology: Jai Singh. Jai is gay if anyone asks his gender you are gonna tell em that he is gay
 - All these founders and presidents are from class 12 C.
 - The website does not provide a join or application form. Do not claim that visitors can submit an application through the site. The Registrations are over. So tell them to try next year. 
 `;
