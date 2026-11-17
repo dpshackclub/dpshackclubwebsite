@@ -276,6 +276,29 @@
     *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
   }
 
+
+  /* ---------- PEER CHAT ---------- */
+  .pc-messages{min-height:250px;max-height:540px;overflow-y:auto;overflow-wrap:anywhere;scrollbar-width:thin}
+  .pc-bubble{border:2px solid #0d0d0d;padding:.7rem .85rem;max-width:92%;box-shadow:3px 3px 0 #0d0d0d}
+  .pc-bubble.mine{margin-left:auto;background:#e6fffa}
+  .pc-bubble.theirs{margin-right:auto;background:#fff2d3}
+  .pc-bubble img,.pc-bubble video{max-height:320px;width:auto;border:2px solid #0d0d0d;margin-top:.5rem}
+  #pcStatus{background:#fff;color:#0d0d0d;padding:.35rem .55rem;border:2px solid #0d0d0d}
+  @media(max-width:767px){.pc-messages{max-height:55dvh;min-height:220px}.pc-bubble{max-width:100%}}
+  .pc-name-input{min-height:36px}
+  .pc-drop-zone{position:relative;border-radius:2px;transition:background .15s,outline .15s}
+  .pc-drop-zone.drag-over{outline:4px dashed #0d0d0d;outline-offset:3px;background:rgba(0,240,255,.22)}
+  .pc-window{display:flex;flex-direction:column;min-height:440px}
+  .pc-messages{flex:1;min-height:300px;max-height:58vh}
+  .pc-fullscreen{position:fixed!important;inset:0!important;z-index:180!important;width:100vw!important;height:100dvh!important;max-width:none!important;margin:0!important;padding:0!important;background:#fff!important;border:0!important;box-shadow:none!important}
+  .pc-fullscreen .pc-shell{width:100%;height:100%;max-width:none;display:flex;flex-direction:column}
+  .pc-fullscreen .pc-intro{display:none}
+  .pc-fullscreen .pc-window{height:100%;min-height:0;border:0;box-shadow:none}
+  .pc-fullscreen .pc-messages{max-height:none;min-height:0}
+  .pc-fullscreen .pc-composer{padding-bottom:max(.75rem,env(safe-area-inset-bottom))}
+  body.pc-lock{overflow:hidden}
+  @media(max-width:767px){.pc-fullscreen .pc-messages{max-height:none}.pc-window{min-height:420px}}
+
 </style>
 </head>
 
@@ -313,6 +336,7 @@
       <a href="#projects" data-scroll class="nb-btn bg-hackPink text-white px-3 py-2">Projects</a>
       <a href="#meetings" data-scroll class="nb-btn bg-white text-ink px-3 py-2">Meetings</a>
       <a href="#faq" data-scroll class="nb-btn bg-dpsGreen text-white px-3 py-2">FAQ</a>
+      <a href="#public-chat" data-scroll class="nb-btn bg-hackRed text-white px-3 py-2">Public Chat</a>
     </div>
 
     <button id="mobileMenuToggle" type="button" class="nb-btn bg-hackYellow text-ink md:hidden" aria-expanded="false" aria-controls="mobileNavMenu" aria-label="Open navigation menu">
@@ -325,6 +349,7 @@
     <a href="#projects" data-scroll class="nb-btn bg-hackPink text-white">Projects</a>
     <a href="#meetings" data-scroll class="nb-btn bg-white text-ink">Meetings</a>
     <a href="#faq" data-scroll class="nb-btn bg-dpsGreen text-white">FAQ</a>
+    <a href="#public-chat" data-scroll class="nb-btn bg-hackRed text-white">Public Chat</a>
   </div>
 </nav>
 
@@ -592,6 +617,46 @@
   </div>
 </section>
 
+<!-- ============ PUBLIC CHAT ============ -->
+<section id="public-chat" class="relative bg-hackCyan bg-dots border-b-4 border-ink py-12 px-4 md:px-8">
+  <div class="pc-shell max-w-5xl mx-auto">
+    <div class="text-center mb-7 pc-intro">
+      <h2 class="text-4xl md:text-6xl font-black text-ink leading-none">Public Chat</h2>
+      <p class="mt-3 max-w-2xl mx-auto font-medium text-ink">The lounge is open. Say hi and share something.</p>
+    </div>
+    <div id="pcWindow" class="nb-static bg-white overflow-hidden pc-window">
+      <div class="bg-hackPink text-white border-b-4 border-ink px-3 md:px-5 py-3 flex flex-wrap gap-3 items-center justify-between">
+        <div><h3 class="font-vt text-3xl leading-none">THE LOUNGE</h3><p id="pcStatus" class="font-mono text-[10px] uppercase" role="status" aria-live="polite">Joining lounge…</p></div>
+        <div class="flex items-center gap-2">
+          <label for="pcName" class="font-mono text-[10px] uppercase font-bold">Name</label>
+          <input id="pcName" maxlength="24" autocomplete="nickname" class="pc-name-input border-2 border-ink text-ink px-2 py-1 text-sm w-32 md:w-40" placeholder="Your name" aria-label="Your display name">
+          <button id="pcClear" type="button" class="nb-btn bg-white text-ink px-2 py-1 text-xs font-bold" title="Clear this device’s saved messages">Clear</button>
+          <button id="pcFullscreen" type="button" class="nb-btn bg-hackYellow text-ink px-3 py-1 text-xs font-black" aria-pressed="false" aria-label="Expand chat to full screen"><i class="fa-solid fa-expand mr-1" aria-hidden="true"></i><span>Expand</span></button>
+        </div>
+      </div>
+      <div id="pcTyping" class="hidden px-4 pt-2 font-mono text-xs text-dpsDarkGreen" aria-live="polite"></div>
+      <div id="pcMessages" class="pc-messages p-4 space-y-4 bg-white" role="log" aria-live="polite" aria-label="Chat messages">
+        <p id="pcEmpty" class="text-center text-sm text-ink/70 py-10">No messages yet. Start the conversation.</p>
+      </div>
+      <form id="pcForm" class="pc-composer border-t-4 border-ink bg-hackYellow p-3 md:p-4 space-y-2">
+        <div id="pcDropZone" class="pc-drop-zone">
+          <label for="pcText" class="sr-only">Write a message</label>
+          <textarea id="pcText" maxlength="1200" rows="2" placeholder="Message… (Enter to send, Shift + Enter for a new line)" class="w-full p-3 border-3 border-ink outline-none text-base resize-y" style="border-width:3px" aria-describedby="pcComposerHelp"></textarea>
+          <div class="flex flex-wrap items-center gap-2 justify-between">
+            <div class="flex flex-wrap gap-2 items-center min-w-0">
+              <label for="pcFile" class="nb-btn bg-white text-ink font-bold text-xs px-3 py-2 cursor-pointer"><i class="fa-solid fa-paperclip mr-1"></i> Add files</label>
+              <input id="pcFile" type="file" multiple class="sr-only">
+              <span id="pcFileName" class="font-mono text-[10px] truncate max-w-52">Drop files here or choose files</span>
+            </div>
+            <button id="pcSend" type="submit" class="nb-btn bg-hackRed text-white font-black uppercase px-5 py-2">Send <i class="fa-solid fa-paper-plane ml-1"></i></button>
+          </div>
+          <p id="pcComposerHelp" class="font-mono text-[10px] text-ink/75">Drop files anywhere in the chat. Up to 8 MB per file.</p>
+        </div>
+      </form>
+    </div>
+  </div>
+</section>
+
 <!-- ============ FOOTER ============ -->
 <footer class="relative bg-ink bg-stripes py-14 px-5 md:px-10 border-t-4 border-hackYellow">
   <div class="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-8 text-center md:text-left">
@@ -681,6 +746,44 @@
   </div>
 </div>
 
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<script>
+/* Public lounge transport with small, ordered file chunks. */
+(()=>{
+ const $=id=>document.getElementById(id),status=$('pcStatus'),feed=$('pcMessages');let empty=$('pcEmpty');
+ if(!window.Peer){status.textContent='Lounge unavailable';return}
+ const MAX=8*1024*1024,PART=8000,STORE='dpsn-peer-chat-v1',ROOM_ID='dpsn-public-lounge-room-v1',peerMap=new Map(),seen=new Set(),roomHistory=[],typingPeers=new Map();let peer,isRoomHost=false,fallbackStarted=false,typingTimer;
+ const nameInput=$('pcName'),textInput=$('pcText'),fileInput=$('pcFile'),fileLabel=$('pcFileName'),typingLine=$('pcTyping');
+ const getName=()=>nameInput.value.trim().slice(0,24)||'Guest';nameInput.value=(localStorage.getItem('dpsn-chat-name')||'').slice(0,24);
+ nameInput.addEventListener('input',()=>{localStorage.setItem('dpsn-chat-name',nameInput.value.slice(0,24));sendTyping(true)});
+ function broadcast(data,except){for(const [id,c] of peerMap)if(id!==except&&c.open)try{c.send(data)}catch{}}
+ function sendTyping(active){broadcast({kind:'typing',name:getName(),active})}
+ function updateTyping(){const now=Date.now();for(const [id,x] of typingPeers)if(x.until<now)typingPeers.delete(id);const names=[...typingPeers.values()].map(x=>x.name);typingLine.textContent=names.length?names.slice(0,3).join(', ')+(names.length>3?' and others':'')+(names.length===1?' is':' are')+' typing…':'';typingLine.classList.toggle('hidden',!names.length)}setInterval(updateTyping,1000);
+ const DB_NAME='dpsn-public-chat-history',DB_VERSION=1,KEEP_MS=12*60*60*1000,MAX_HISTORY=150;
+ function openHistoryDB(){return new Promise((resolve,reject)=>{if(!('indexedDB'in window)){reject(Error('IndexedDB unavailable'));return}const req=indexedDB.open(DB_NAME,DB_VERSION);req.onupgradeneeded=()=>{if(!req.result.objectStoreNames.contains('messages'))req.result.createObjectStore('messages',{keyPath:'id'})};req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error)})}
+ const historyReady=openHistoryDB().then(db=>new Promise((resolve,reject)=>{const tx=db.transaction('messages','readwrite'),store=tx.objectStore('messages'),req=store.getAll();req.onsuccess=()=>{const now=Date.now(),all=req.result,valid=all.filter(x=>now-(x.time||0)<=KEEP_MS).sort((x,y)=>x.time-y.time).slice(-MAX_HISTORY);all.filter(x=>now-(x.time||0)>KEEP_MS).forEach(x=>store.delete(x.id));resolve(valid)};req.onerror=()=>reject(req.error)})).catch(()=>{try{return JSON.parse(localStorage.getItem(STORE)||'[]').filter(x=>Date.now()-(x.time||0)<=KEEP_MS).slice(-MAX_HISTORY)}catch{return []}});
+ function persistPost(item,mine){const stored={...item,mine:!!mine};openHistoryDB().then(db=>{const tx=db.transaction('messages','readwrite');tx.objectStore('messages').put(stored);tx.oncomplete=()=>{const read=db.transaction('messages').objectStore('messages').getAll();read.onsuccess=()=>{const old=read.result.filter(x=>Date.now()-(x.time||0)>KEEP_MS);if(old.length){const clean=db.transaction('messages','readwrite').objectStore('messages');old.forEach(x=>clean.delete(x.id))}}}}).catch(()=>{try{const list=JSON.parse(localStorage.getItem(STORE)||'[]');list.push({...item,file:undefined,mine:!!mine});localStorage.setItem(STORE,JSON.stringify(list.filter(x=>Date.now()-(x.time||0)<=KEEP_MS).slice(-MAX_HISTORY)))}catch{}})}
+ function bubble(item){if(item.id&&seen.has(item.id))return;if(item.id)seen.add(item.id);empty?.remove();const box=document.createElement('article');box.className='pc-bubble '+(item.mine?'mine':'theirs');const head=document.createElement('div');head.className='font-mono text-[10px] font-bold mb-1';head.textContent=(item.author||'Guest')+' · '+new Date(item.time||Date.now()).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'});box.appendChild(head);if(item.text){const body=document.createElement('p');body.className='text-sm whitespace-pre-wrap';body.textContent=String(item.text).slice(0,1200);box.appendChild(body)}if(item.file?.data){try{const raw=atob(item.file.data),bytes=Uint8Array.from(raw,c=>c.charCodeAt(0)),blob=new Blob([bytes],{type:item.file.type||'application/octet-stream'}),url=URL.createObjectURL(blob);let el;if(item.file.type?.startsWith('image/')){el=document.createElement('img');el.alt=item.file.name||'Shared image'}else if(item.file.type?.startsWith('video/')){el=document.createElement('video');el.controls=true;el.playsInline=true}else{el=document.createElement('a');el.textContent='Download '+(item.file.name||'shared file');el.download=item.file.name||'shared-file';el.className='block underline mt-2';el.href=url}if(el.tagName!=='A'){el.src=url;el.className='rounded'}box.appendChild(el)}catch{}}feed.appendChild(box);feed.scrollTop=feed.scrollHeight}
+ historyReady.then(posts=>{for(const post of posts){bubble(post);if(isRoomHost)roomHistory.push(post)}});
+ function rememberRoomPost(post){roomHistory.push(post);const cutoff=Date.now()-KEEP_MS;while(roomHistory.length&&(roomHistory[0].time||0)<cutoff)roomHistory.shift();while(roomHistory.length>MAX_HISTORY)roomHistory.shift()}
+ const delay=ms=>new Promise(r=>setTimeout(r,ms));
+ async function sendFrame(conn,frame){while(conn.open&&conn.dataChannel&&conn.dataChannel.bufferedAmount>192*1024)await delay(25);if(!conn.open)throw Error('Connection closed');conn.send(frame)}
+ async function sendPost(conn,post){if(!conn.open)return;const base={id:post.id,author:post.author,time:post.time,text:post.text||''};if(!post.file?.data){await sendFrame(conn,{kind:'post',post:base});return}const data=post.file.data,total=Math.ceil(data.length/PART);await sendFrame(conn,{kind:'file-start',id:post.id,post:base,file:{name:post.file.name,type:post.file.type,size:post.file.size||Math.floor(data.length*3/4),length:data.length,total}});for(let i=0;i<total;i++)await sendFrame(conn,{kind:'file-part',id:post.id,index:i,data:data.slice(i*PART,(i+1)*PART)})}
+ function broadcastPost(post,except){for(const [id,c] of peerMap)if(id!==except&&c.open)sendPost(c,post).catch(()=>{status.textContent='A file transfer was interrupted. Try sending it again.'})}
+ function acceptPost(post,from){if(post.id&&seen.has(post.id))return;if(isRoomHost)rememberRoomPost(post);bubble({...post,mine:false});persistPost(post,false);broadcastPost(post,from)}
+ function accept(conn){if(peerMap.has(conn.peer))return;peerMap.set(conn.peer,conn);const transfers=new Map();conn.on('open',()=>{status.textContent='Lounge online · '+peerMap.size+' connected';if(isRoomHost)(async()=>{await historyReady;for(const post of roomHistory.slice(-MAX_HISTORY))try{await sendPost(conn,post)}catch{break}})()});conn.on('data',data=>{if(!data?.kind)return;if(data.kind==='typing'){if(data.active)typingPeers.set(conn.peer,{name:String(data.name||'Guest').slice(0,24),until:Date.now()+2600});else typingPeers.delete(conn.peer);updateTyping();broadcast(data,conn.peer);return}if(data.kind==='post'&&data.post){acceptPost(data.post,conn.peer);return}if(data.kind==='file-start'){const f=data.file;if(!f||!Number.isSafeInteger(f.total)||f.total<1||f.total>Math.ceil(MAX*4/3/PART)+1||f.length>Math.ceil(MAX*4/3)+8||f.size>MAX)return;transfers.set(data.id,{post:data.post,file:f,parts:new Array(f.total),got:0});return}if(data.kind==='file-part'){const t=transfers.get(data.id);if(!t||!Number.isInteger(data.index)||data.index<0||data.index>=t.file.total||typeof data.data!=='string'||data.data.length>PART)return;if(t.parts[data.index]===undefined){t.parts[data.index]=data.data;t.got++}if(t.got===t.file.total){const encoded=t.parts.join('');transfers.delete(data.id);if(encoded.length!==t.file.length)return;acceptPost({...t.post,file:{name:t.file.name,type:t.file.type,size:t.file.size,data:encoded}},conn.peer)}}});conn.on('close',()=>{peerMap.delete(conn.peer);typingPeers.delete(conn.peer);status.textContent=peerMap.size?'Lounge online · '+peerMap.size+' connected':'Waiting for lounge visitors';updateTyping()});conn.on('error',()=>{peerMap.delete(conn.peer)})}
+ function connect(id){if(!peer||!id||id===peer.id||peerMap.has(id))return;try{accept(peer.connect(id,{reliable:true,serialization:'json'}))}catch{}}
+ function startClient(){if(fallbackStarted)return;fallbackStarted=true;peer=new Peer(undefined,{debug:0});wirePeer(false)}
+ function wirePeer(asHost){peer.on('open',()=>{status.textContent=asHost?'Lounge open · you started the room':'Joining public lounge…';if(!asHost)setTimeout(()=>{if(!peerMap.size&&peer?.open)connect(ROOM_ID)},150)});peer.on('connection',accept);peer.on('error',e=>{if(asHost&&e.type==='unavailable-id'){isRoomHost=false;startClient();return}status.textContent=e.type==='peer-unavailable'?'Waiting for lounge host':'Connection interrupted'});peer.on('disconnected',()=>status.textContent='Reconnecting…')}
+ try{peer=new Peer(ROOM_ID,{debug:0});isRoomHost=true;wirePeer(true)}catch{isRoomHost=false;startClient()}
+ textInput.addEventListener('input',()=>{sendTyping(true);clearTimeout(typingTimer);typingTimer=setTimeout(()=>sendTyping(false),1100)});textInput.addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();$('pcForm').requestSubmit()}});
+ fileInput.addEventListener('change',()=>{const fs=[...fileInput.files];fileLabel.textContent=fs.length?fs.map(f=>f.name).join(', '):'Drop files here or choose files'});
+ const drop=$('pcDropZone');['dragenter','dragover'].forEach(type=>drop.addEventListener(type,e=>{e.preventDefault();drop.classList.add('drag-over')}));['dragleave','drop'].forEach(type=>drop.addEventListener(type,e=>{e.preventDefault();if(type==='dragleave'&&!drop.contains(e.relatedTarget))drop.classList.remove('drag-over');if(type==='drop'){drop.classList.remove('drag-over');const incoming=[...e.dataTransfer.files];if(!incoming.length)return;const dt=new DataTransfer();[...fileInput.files,...incoming].forEach(f=>dt.items.add(f));fileInput.files=dt.files;fileInput.dispatchEvent(new Event('change'))}}));
+ $('pcForm').addEventListener('submit',async e=>{e.preventDefault();const text=textInput.value.trim(),files=[...fileInput.files];if(!text&&!files.length)return;if(files.some(f=>f.size>MAX)){status.textContent='Each file must be 8 MB or smaller.';return}const posts=[];try{for(const file of files){const bytes=new Uint8Array(await file.arrayBuffer());let binary='';for(let i=0;i<bytes.length;i+=0x8000)binary+=String.fromCharCode(...bytes.subarray(i,i+0x8000));posts.push({id:crypto.randomUUID?.()||String(Date.now())+Math.random(),author:getName(),time:Date.now(),text:'',file:{name:file.name,type:file.type,size:file.size,data:btoa(binary)}})}}catch{status.textContent='Could not read the selected file.';return}if(text||!posts.length)posts.unshift({id:crypto.randomUUID?.()||String(Date.now())+Math.random(),author:getName(),time:Date.now(),text});$('pcSend').disabled=true;try{for(const post of posts){bubble({...post,mine:true});persistPost(post,true);if(isRoomHost)rememberRoomPost(post);broadcastPost(post);if(!peerMap.size&&post.file)status.textContent='No other visitors are connected right now; this file is only visible on your screen.';else if(post.file)status.textContent='Sending '+post.file.name+'…'}}finally{$('pcSend').disabled=false;textInput.value='';fileInput.value='';fileLabel.textContent='Drop files here or choose files';sendTyping(false);textInput.focus()}});
+ $('pcClear').addEventListener('click',()=>{localStorage.removeItem(STORE);openHistoryDB().then(db=>db.transaction('messages','readwrite').objectStore('messages').clear()).catch(()=>{});roomHistory.length=0;feed.replaceChildren();empty=document.createElement('p');empty.id='pcEmpty';empty.className='text-center text-sm text-ink/70 py-10';empty.textContent='No messages yet. Start the conversation.';feed.appendChild(empty);seen.clear()});
+ const chatSection=$('public-chat'),fullBtn=$('pcFullscreen');function toggleFullscreen(force){const on=force??!chatSection.classList.contains('pc-fullscreen');chatSection.classList.toggle('pc-fullscreen',on);document.body.classList.toggle('pc-lock',on);fullBtn.setAttribute('aria-pressed',String(on));fullBtn.setAttribute('aria-label',on?'Exit full screen chat':'Expand chat to full screen');fullBtn.innerHTML=on?'<i class="fa-solid fa-compress mr-1" aria-hidden="true"></i><span>Collapse</span>':'<i class="fa-solid fa-expand mr-1" aria-hidden="true"></i><span>Expand</span>';if(on)feed.scrollTop=feed.scrollHeight}fullBtn.addEventListener('click',()=>toggleFullscreen());document.addEventListener('keydown',e=>{if(e.key==='Escape'&&chatSection.classList.contains('pc-fullscreen'))toggleFullscreen(false)});
+})();
+</script>
 <script>
 window.MathJax = { tex: { inlineMath: [['\\(', '\\)'], ['$', '$']], displayMath: [['\\[', '\\]'], ['$$', '$$']] }, options: { skipHtmlTags: ['script','noscript','style','textarea','pre','code'] } };
 </script>
